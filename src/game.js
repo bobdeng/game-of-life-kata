@@ -33,9 +33,12 @@ export default class Game {
 
     getAliveNeibor(line, col) {
         let aliveCount = 0;
-        for (let k = line - 1; k < line + 1; k++) {
-            for (let l = col - 1; l < col + 1; l++) {
+        for (let k = line - 1; k <= line + 1; k++) {
+            for (let l = col - 1; l <= col + 1; l++) {
                 if (k === line && l === col) {
+                    continue;
+                }
+                if (k < 0 || l < 0 || k >= this.size || l >= this.size) {
                     continue;
                 }
                 if (this.matrix[k][l]) {
@@ -49,11 +52,15 @@ export default class Game {
     nextGeneration() {
         let newMatrix = this.newMatrix();
         this.iteration((i, j, alive) => {
-            if (alive && this.size === 3) {
-                let aliveCount = this.getAliveNeibor(i, j);
-                if (aliveCount < 2) {
+            let aliveCount = this.getAliveNeibor(i, j);
+            if (alive) {
+                if (aliveCount < 2 || aliveCount > 3) {
                     newMatrix[i][j] = false
                 }
+                return;
+            }
+            if (aliveCount === 3) {
+                newMatrix[i][j] = true
             }
         })
         this.matrix = newMatrix
