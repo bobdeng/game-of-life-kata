@@ -3,16 +3,16 @@ export default class Game {
     constructor(size, generator) {
         this.size = size;
         this.generator = generator;
-        this.matrix = this.newMatrix();
+        this.matrix = this.newMatrix(this.generator);
 
     }
 
-    newMatrix() {
+    newMatrix(generator) {
         const matrix = []
         for (let i = 0; i < this.size; i++) {
             let line = [];
             for (let j = 0; j < this.size; j++) {
-                line.push(this.generator(i, j))
+                line.push(generator(i, j))
             }
             matrix.push(line)
         }
@@ -50,12 +50,14 @@ export default class Game {
     }
 
     nextGeneration() {
-        let newMatrix = this.newMatrix();
+        let newMatrix = this.newMatrix(() => false);
         this.iteration((i, j, alive) => {
             let aliveCount = this.getAliveNeibor(i, j);
             if (alive) {
                 if (aliveCount < 2 || aliveCount > 3) {
                     newMatrix[i][j] = false
+                } else {
+                    newMatrix[i][j] = true
                 }
                 return;
             }
